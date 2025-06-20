@@ -1,0 +1,5 @@
+# 환경 변수 파일
+.env
+*.env
+
+/jenkins_b_bot_home
