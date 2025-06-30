@@ -23,6 +23,7 @@ export class IpGeolocationMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const clientIp = getClientIp(req); // 클라이언트 IP 가져오기
     const geo = geoip.lookup(clientIp); // IP의 국가 정보 확인
+    console.log(clientIp);
     const { method, originalUrl: url } = req;
 
     // 화이트리스트에 있는 IP는 국가 검증 없이 통과
@@ -30,32 +31,34 @@ export class IpGeolocationMiddleware implements NestMiddleware {
       return next();
     }
 
-    // 화이트리스트에 없고, 한국이 아닌 경우 차단
-    if (!geo || geo.country !== "KR") {
-      const errorResponse: ErrorResponse = {
-        isSuccess: false,
-        statusCode: 403,
-        message: "Access denied: Only accessible from South Korea",
-        timestamp: new Date().toISOString(),
-        path: url,
-        method: method,
-      };
+    console.log(clientIp, "클라아이피");
 
-      // 로깅 처리
-      this.logger.error(
-        JSON.stringify({
-          timestamp: errorResponse.timestamp,
-          method,
-          url,
-          statusCode: errorResponse.statusCode,
-          ip: clientIp,
-          message: errorResponse.message,
-        })
-      );
+    // // 화이트리스트에 없고, 한국이 아닌 경우 차단
+    // if (!geo || geo.country !== "KR") {
+    //   const errorResponse: ErrorResponse = {
+    //     isSuccess: false,
+    //     statusCode: 403,
+    //     message: "Access denied: Only accessible from South Korea",
+    //     timestamp: new Date().toISOString(),
+    //     path: url,
+    //     method: method,
+    //   };
 
-      // 응답 객체로 클라이언트에게 반환
-      return res.status(403).json(errorResponse);
-    }
+    //   // 로깅 처리
+    //   this.logger.error(
+    //     JSON.stringify({
+    //       timestamp: errorResponse.timestamp,
+    //       method,
+    //       url,
+    //       statusCode: errorResponse.statusCode,
+    //       ip: clientIp,
+    //       message: errorResponse.message,
+    //     })
+    //   );
+
+    //   // 응답 객체로 클라이언트에게 반환
+    //   return res.status(403).json(errorResponse);
+    // }
 
     next(); // IP가 한국일 경우 계속 진행
   }
