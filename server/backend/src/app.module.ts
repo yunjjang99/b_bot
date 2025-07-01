@@ -10,6 +10,7 @@ import { IpGeolocationMiddleware } from "./common/middleware/ip-geolocation.midd
 import { AppLogger } from "./app.logger";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggingInterceptor } from "./common/interceptor/logging.interceptor";
+import { PuppeteerModule } from "./puppeteer/puppeteer.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { LoggingInterceptor } from "./common/interceptor/logging.interceptor";
     }),
     AuthModule,
     UserModule,
+    PuppeteerModule,
   ],
   providers: [
     AppLogger,

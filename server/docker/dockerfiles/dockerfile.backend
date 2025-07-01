@@ -102,6 +102,14 @@ RUN npm run build
 # Stage 2: Production
 FROM node:20.16.0 AS production
 
+
+RUN apt-get update && \
+    apt-get install -y \
+    chromium \
+    xvfb \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
 # 필수 패키지 설치
 RUN apt-get update && \
     apt-get install -y chromium && \
@@ -128,4 +136,5 @@ ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 EXPOSE 5121
 
 # 애플리케이션 실행
-CMD ["pm2-runtime", "dist/src/main.js"]
+# xvfb-run 으로 Chromium이 화면 없이 떠도 돌아가게 감싸줌
+CMD ["sh", "-c", "xvfb-run --server-args='-screen 0 1280x720x24' pm2-runtime dist/src/main.js"]
